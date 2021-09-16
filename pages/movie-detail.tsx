@@ -1,11 +1,10 @@
-import { NextPage, NextPageContext } from 'next'
+import { NextPageContext } from 'next'
 import React from 'react'
 import SEO from '../components/SEO'
 
 import { MovieDetailContainerProps } from '../interfaces/movie-detail'
 import { requestApi } from '../utils/request'
 import {Row, Col, Container} from 'reactstrap'
-import NavbarFeature from '../features/Navbar'
  const MovieDetail = (props: MovieDetailContainerProps) => {
     const {movieDetail} = props
 
@@ -13,8 +12,7 @@ import NavbarFeature from '../features/Navbar'
 
     return (
       <React.Fragment>
-        <SEO title={movieDetail.title} />
-        <NavbarFeature />
+        <SEO title={movieDetail.title} description={movieDetail.overview} />
         <Container>
             <Row>
                 <Col>

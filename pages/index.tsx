@@ -8,7 +8,10 @@ import { requestApi } from '../utils/request'
 import {useRouter} from 'next/router'
 import InfiniteScroll from '../components/InfiniteScroll'
 import { Spinner,  Card, CardText, CardBody,
-  CardTitle } from 'reactstrap'
+  CardTitle, 
+  Container,
+  Row,
+  Col} from 'reactstrap'
 import styled from 'styled-components'
 import Autocomplete from '../components/Autocomplete'
 
@@ -30,7 +33,28 @@ type ListMovieProps = {
 }
 
 const CustomCard = styled(Card)`
-cursor: pointer
+cursor: pointer;
+box-shadow: rgb(49 53 59 / 12%) 0px 1px 6px 0px;
+height: 300px;
+overflow: hidden;
+white-space: pre-wrap;
+display: -webkit-box;
+line-height: 1.5;
+-webkit-box-orient: vertical;
+word-break: break-all;
+text-overflow:ellipsis
+
+`
+
+const CustomCardText = styled(CardText)`
+height: 170px;
+overflow: hidden;
+white-space: pre-wrap;
+line-height: 1.5;
+-webkit-line-clamp: 4;
+-webkit-box-orient: vertical;
+word-break: break-all;
+text-overflow:ellipsis;
 `
 
 type AutoCompleteDataProps = {
@@ -38,7 +62,6 @@ type AutoCompleteDataProps = {
   id: number
 }
 
-const DynamicNavbar = dynamic(() => import('../features/Navbar'))
 const Home = (props:HomepageProps) => {
   const {responseData, isError} = props
   const [listMovie, setListMovie] = useState<any>(responseData.results)
@@ -104,26 +127,41 @@ const Home = (props:HomepageProps) => {
       return (
         <React.Fragment >
         <SEO />
-        <DynamicNavbar />
           <main >
-          <Autocomplete name='query' onChange={onSearch} results={autocompleteResult} labelKey='title' onClick={(data:AutoCompleteDataProps) => goToDetailPage(data.id)} />
-          {responseData && !isError ?  
+          <Container>
+            <Row>
+              <Col className='mt-3' xs={12} >
+              <Autocomplete placeholder='Search Movie..' name='query' onChange={onSearch} results={autocompleteResult} labelKey='title' onClick={(data:AutoCompleteDataProps) => goToDetailPage(data.id)} />
+              </Col>
+              <Col xs={12} >
+              {responseData && !isError ?  
             <InfiniteScroll onNextPage={onNextPage} >
                 <React.Fragment>
+                  <Row className='mt-3' >
+                    
                     {listMovie && listMovie.map((movie: ListMovieProps, index: number) => (
-                        <CustomCard onClick={() => goToDetailPage(movie.id)} key={index} >
+                      <Col key={index} className='mb-3' xs={12} sm={12} md={6} lg={4} xl={3} >
+                        <CustomCard onClick={() => goToDetailPage(movie.id)} >
                             <CardBody>
                               <CardTitle tag='h5' >
                                 {movie.title}
                               </CardTitle>
-                              <CardText>
+                              <CustomCardText>
                                 {movie.overview}
-                              </CardText>
+                              </CustomCardText>
                             </CardBody>
                         </CustomCard>
+                        </Col>
                     ))}
+                  </Row>
+                  
                 </React.Fragment>
             </InfiniteScroll> : <Spinner/>}
+              </Col>
+            </Row>
+
+          </Container>
+         
           </main>
           <Footer />
         </React.Fragment>

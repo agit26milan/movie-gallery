@@ -13,7 +13,7 @@ const NavbarFeature = () => {
     return (
         <div>
       <NavbarCustom color="light" light expand="md">
-        <NavbarBrand href="/">Movie Gallery</NavbarBrand>       
+        {/* <NavbarBrand href="/"></NavbarBrand>        */}
       </NavbarCustom>
     </div>
     )
