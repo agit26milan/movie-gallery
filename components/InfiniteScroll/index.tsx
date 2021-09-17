@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { Button } from 'reactstrap'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faArrowCircleUp} from '@fortawesome/free-solid-svg-icons'
+import { faArrowCircleUp} from '@fortawesome/free-solid-svg-icons'
 const defaultProps = {
     onNextPage: () => null,
     children :null
@@ -64,6 +64,9 @@ const InfiniteScroll  = (props:InfiniteScrollProps) => {
 
     useEffect(() => {
         listenScroll()
+        return () => {
+            document.removeEventListener('scroll', checkBottomDiv)
+        }
     }, [])
 
     return (

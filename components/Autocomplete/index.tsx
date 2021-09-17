@@ -7,7 +7,6 @@ type AutocompleteProps = {
     results: object[],
     onChange: any,
     onEnter: any,
-    placeholder?:string,
     renderComponent:any
 }
 

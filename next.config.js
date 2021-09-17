@@ -12,6 +12,7 @@ const nextConfig = {
 
 
 module.exports = withPlugins([withImages({
+  esModule: true,
   webpack(config, options) {
     return config
   }

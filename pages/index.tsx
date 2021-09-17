@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faVoteYea} from '@fortawesome/free-solid-svg-icons'
 import { formatMoney } from '../utils/common'
 import Box from '@mui/material/Box';
+import NoDataComponent from '../components/NoData'
 
 type ListMovieProps = {
   adult: boolean,
@@ -133,8 +134,7 @@ const Home = (props:HomepageProps) => {
 
     const goToDetailPage = (id:number) => {
         router.push({
-            pathname: '/movie-detail',
-            query: {...query, id}
+            pathname: `/movie-detail/${id}`,
         })
     }
 
@@ -174,23 +174,36 @@ const Home = (props:HomepageProps) => {
 
     const onEnter = (event:any) => {
       const {value} = event.target
-      setQuerySearch(value)
       setActivePage(1)
       if(value !== '') {
-        searchMovie(1, value)
+        router.push({
+          pathname: '/',
+          query: {...query, search: value}
+        })
       } else {
-        getMovieList(1)
+        router.push({
+          pathname: '/'
+        })
       }
     }
 
     useEffect(() => {
-      if(activePage <= maxPage && !loading && !querySearch) {
+      if(activePage <= maxPage && !loading && router.asPath === '/') {
         getMovieList(activePage)
       } else {
-        searchMovie(activePage, querySearch)
+        const splitPath = router.asPath.split('=')
+        searchMovie(activePage, splitPath[1])
       }
     }, [activePage])
 
+    useEffect(() => {
+      if(router.asPath !== '/') {
+        const splitPath = router.asPath.split('=')
+        searchMovie(1, splitPath[1])
+      } else {
+        getMovieList(1)
+      }
+    }, [router.asPath])
 
       return (
         <React.Fragment >
@@ -199,7 +212,7 @@ const Home = (props:HomepageProps) => {
           <Container>
             <Row>
               <Col className='mt-3' xs={12} >
-              <Autocomplete renderComponent={renderOption} placeholder='Search Movie..' name='query' onChange={onSearch} results={autocompleteResult} onEnter={onEnter} />
+              <Autocomplete renderComponent={renderOption} name='query' onChange={onSearch} results={autocompleteResult} onEnter={onEnter} />
               </Col>
               <Col xs={12} >
               {responseData && !isError ?  
@@ -207,11 +220,11 @@ const Home = (props:HomepageProps) => {
                 <React.Fragment>
                   <Row className='mt-3' >
                     
-                    {listMovie && listMovie.map((movie: ListMovieProps, index: number) => (
+                    {listMovie && listMovie.length > 0 ? listMovie.map((movie: ListMovieProps, index: number) => (
                       <Col key={index} className='mb-3' xs={12} sm={12} md={6} lg={4} xl={3} >
                         <CustomCard onClick={() => goToDetailPage(movie.id)} >
                             <CardBody>
-                            <CardImg className='mb-3' top width="100%" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+                            <CardImg className='mb-3' top width="100%" src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '/assets/images/noimage.jpg'} alt={movie.title} />
                               <CardTitle tag='h5' >
                                 {movie.title}
                               </CardTitle>
@@ -235,7 +248,7 @@ const Home = (props:HomepageProps) => {
                            
                         </CustomCard>
                         </Col>
-                    ))}
+                    )) : <NoDataComponent title='Film tidak di temukan' subtitle='Silahkan cari dengan keyword lain' />}
                   </Row>
                   
                 </React.Fragment>

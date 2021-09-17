@@ -8,4 +8,5 @@ props that required for this component
     labelKey -> mapping key to show results in the component,
     onChange -> event when we start to search,
     onClick -> trigger event when click autocomplete result,
+    onEnter -> trigger event when user press enter
 ```
