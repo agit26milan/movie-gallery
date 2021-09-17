@@ -141,7 +141,7 @@ const Home = (props:HomepageProps) => {
       let year:string[] = []
       const thisYear = new Date().getFullYear()
 
-      for(let i = 1950; i < thisYear; i++) {
+      for(let i = 2000; i < thisYear; i++) {
         year.push(String(i))
       }
 
