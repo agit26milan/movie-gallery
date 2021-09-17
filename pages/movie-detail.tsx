@@ -8,8 +8,6 @@ import {Row, Col, Container} from 'reactstrap'
  const MovieDetail = (props: MovieDetailContainerProps) => {
     const {movieDetail} = props
 
-    console.log(movieDetail, 'salik')
-
     return (
       <React.Fragment>
         <SEO title={movieDetail.title} description={movieDetail.overview} />

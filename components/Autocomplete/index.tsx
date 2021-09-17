@@ -1,56 +1,53 @@
 import React from 'react'
-import {Button, Input, InputGroup, InputGroupAddon} from 'reactstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch} from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components'
-
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 type AutocompleteProps = {
     name?: string,
     results: object[],
-    labelKey: string,
     onChange: any,
-    onClick: any,
-    placeholder?:string
+    onEnter: any,
+    placeholder?:string,
+    renderComponent:any
 }
 
-const CustmButtom = styled(Button)`
-width: 50px
-
+const AutoCompleteCustom = styled(Autocomplete)`
+width: 100%
 `
 
-const SearchResult = styled.div`
-box-shadow: rgb(49 53 59 / 12%) 0px 1px 6px 0px;
-margin-top:15px;
-`
+const AutocompleteComponent = (props:AutocompleteProps) => {
 
-const Result = styled.div`
-padding: 5px 10px
-`
+    const { onChange, results = [], renderComponent, onEnter} = props
 
-const Autocomplete = (props:AutocompleteProps) => {
-
-    const {name, onChange, results = [], labelKey, onClick, placeholder} = props
-
+    const onEnterSearch = (event:any) => {
+        if (event.charCode === 13) {
+            onEnter(event)
+          }
+    }
+    
     return(
         <div>
-            <InputGroup>
-            <Input placeholder={placeholder} onChange={onChange} name={name} />
-            <InputGroupAddon addonType="append"><CustmButtom aria-label='search' > <FontAwesomeIcon icon={faSearch} color='white' size={'1x'} /> </CustmButtom></InputGroupAddon>
-            </InputGroup>
-            <SearchResult>
-            {results.length > 0 ? <React.Fragment>
-                {results.map((res:any, index:number) => (
-                    <Result key={index} >
-                        <Button onClick={() => onClick(res)} >{res[labelKey]} </Button>
-                    </Result>
-                ))}
-            </React.Fragment> : null}
-            </SearchResult>
-       
-            
+            <AutoCompleteCustom
+                id="free-solo-search"
+                freeSolo
+                options={results}
+                disableClearable
+                renderInput={(params) =><TextField
+                    {...params}
+                    label="Search input"
+                    InputProps={{
+                      ...params.InputProps,
+                      type: 'search',
+                    }}
+                    onKeyPress={onEnterSearch}
+
+                  />}
+                onInputChange={onChange}
+                renderOption={renderComponent}
+                />            
         </div>
     )
 }
 
 
-export default Autocomplete
+export default AutocompleteComponent

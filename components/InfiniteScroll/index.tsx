@@ -42,7 +42,7 @@ const InfiniteScroll  = (props:InfiniteScrollProps) => {
 
     const isBottomEl = (el:any) => {
         if(el.getBoundingClientRect) {
-            if(el.getBoundingClientRect().bottom <= window.innerHeight) {
+            if(el.getBoundingClientRect().bottom - 10 <= window.innerHeight) {
                 onNextPage()
             }
             if(el.getBoundingClientRect().y < 0) {

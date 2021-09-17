@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const withPlugins = require('next-compose-plugins')
+const withImages = require('next-images')
 
 const nextConfig = {
   reactStrictMode: true,
@@ -10,4 +11,8 @@ const nextConfig = {
 }
 
 
-module.exports = withPlugins([], nextConfig)
+module.exports = withPlugins([withImages({
+  webpack(config, options) {
+    return config
+  }
+})], nextConfig)
