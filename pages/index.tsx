@@ -221,13 +221,16 @@ const Home = (props:HomepageProps) => {
       if(activePage <= maxPage && !loading && router.asPath === '/') {
         getMovieList(activePage)
       } else {
-        const splitParamUrl:ParamProps = splitUrl(router.asPath)
-        searchMovie(activePage, splitParamUrl.search, splitParamUrl.year)
+        if(router.asPath.includes('search')) {
+          const splitParamUrl:ParamProps = splitUrl(router.asPath)
+          searchMovie(activePage, splitParamUrl.search, splitParamUrl.year)
+        }
       }
     }, [activePage])
 
     useEffect(() => {
       if(router.asPath !== '/') {
+        console.log('masuklah123')
         const splitParamUrl:ParamProps = splitUrl(router.asPath)
         searchMovie(1, splitParamUrl.search, splitParamUrl.year)
       } else {
