@@ -230,7 +230,6 @@ const Home = (props:HomepageProps) => {
 
     useEffect(() => {
       if(router.asPath !== '/') {
-        console.log('masuklah123')
         const splitParamUrl:ParamProps = splitUrl(router.asPath)
         searchMovie(1, splitParamUrl.search, splitParamUrl.year)
       } else {
