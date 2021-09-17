@@ -16,9 +16,10 @@ import styled from 'styled-components'
 import Autocomplete from '../components/Autocomplete'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faVoteYea} from '@fortawesome/free-solid-svg-icons'
-import { formatMoney } from '../utils/common'
+import { formatMoney, splitUrl } from '../utils/common'
 import Box from '@mui/material/Box';
 import NoDataComponent from '../components/NoData'
+import FilterButton from '../components/FilterButton'
 
 type ListMovieProps = {
   adult: boolean,
@@ -88,6 +89,11 @@ type AutoCompleteDataProps = {
   id: number
 }
 
+type ParamProps = {
+  search?:string,
+  year?:string
+}
+
 const Home = (props:HomepageProps) => {
   const {responseData, isError} = props
   const [listMovie, setListMovie] = useState<any>(responseData.results)
@@ -97,7 +103,7 @@ const Home = (props:HomepageProps) => {
   const [activePage, setActivePage] = useState(1)
   const [autocompleteResult, setAutocompleteResult] = useState([])
   const [maxPage] = useState(responseData.total_pages)
-  const [querySearch, setQuerySearch] = useState('')
+
     const getMovieList = async (page:number) => {
         setLoading(true)
         let url = `/movie/top_rated?api_key=${process.env.apiKey}&page=${page}`
@@ -129,9 +135,18 @@ const Home = (props:HomepageProps) => {
 
     const onNextPage = () => {
       setActivePage((prevState) => prevState + 1)
-
     }
 
+    const listYear = () => {
+      let year:string[] = []
+      const thisYear = new Date().getFullYear()
+
+      for(let i = 1950; i < thisYear; i++) {
+        year.push(String(i))
+      }
+
+      return year
+    }
     const goToDetailPage = (id:number) => {
         router.push({
             pathname: `/movie-detail/${id}`,
@@ -147,8 +162,8 @@ const Home = (props:HomepageProps) => {
       )
     }
 
-    const searchMovie = async (page:number = 1, value:string = '') => {
-      const url = `/search/movie?api_key=${process.env.apiKey}&page=${page}&query=${value}`
+    const searchMovie = async (page:number = 1, value:string = '', year:string = '') => {
+      const url = `/search/movie?api_key=${process.env.apiKey}&page=${page}&query=${value}&year=${year}`
       if(value.length > 0) {
         setLoading(true)
         const processSearchMovie = await requestApi(url, 'GET', null, null)
@@ -187,19 +202,34 @@ const Home = (props:HomepageProps) => {
       }
     }
 
+    const onFilter = (value: string) => {
+      router.push({
+        pathname: '/',
+        query: {...query, year:value}
+      })
+    }
+
+    const handleTitleFilter = () => {
+      const splitParamUrl:ParamProps = splitUrl(router.asPath)
+      if(splitParamUrl.year) {
+        return `Year ${splitParamUrl.year}`
+      }
+      return 'Filter by movie year'
+    }
+
     useEffect(() => {
       if(activePage <= maxPage && !loading && router.asPath === '/') {
         getMovieList(activePage)
       } else {
-        const splitPath = router.asPath.split('=')
-        searchMovie(activePage, splitPath[1])
+        const splitParamUrl:ParamProps = splitUrl(router.asPath)
+        searchMovie(activePage, splitParamUrl.search, splitParamUrl.year)
       }
     }, [activePage])
 
     useEffect(() => {
       if(router.asPath !== '/') {
-        const splitPath = router.asPath.split('=')
-        searchMovie(1, splitPath[1])
+        const splitParamUrl:ParamProps = splitUrl(router.asPath)
+        searchMovie(1, splitParamUrl.search, splitParamUrl.year)
       } else {
         getMovieList(1)
       }
@@ -214,6 +244,9 @@ const Home = (props:HomepageProps) => {
               <Col className='mt-3' xs={12} >
               <Autocomplete renderComponent={renderOption} name='query' onChange={onSearch} results={autocompleteResult} onEnter={onEnter} />
               </Col>
+              {router.asPath !== '/' ? <Col className='mt-3' xs={12} >
+                <FilterButton title={handleTitleFilter()} onSelectMenu={onFilter} menus={listYear()} />
+              </Col> : null}
               <Col xs={12} >
               {responseData && !isError ?  
             <InfiniteScroll onNextPage={onNextPage} >
