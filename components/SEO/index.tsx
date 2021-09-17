@@ -8,16 +8,27 @@ const defaultProps = {
 
 type SeoProps = {
     title: string,
-    description: string
+    description: string,
+    image?:string
 } & typeof defaultProps
 
 const SEO = (props:SeoProps) => {
-    const {title, description} = props
+    const {title, description, image} = props
     return (
     <Head>
         <title>{title} </title>
         <meta name="description" content={description} />
+        <meta key="og:type" property="og:type" content="website" />
         <link rel="icon" href="/favicon.ico" />
+        <meta key="og:title" name="og:title" property="og:title" content={title} />
+        <meta
+            name="og:description"
+            property="og:description"
+            content={description}
+            key="og:description"
+        />
+        {image ? <meta property="og:image" key="og:image" content={`${image}`} /> : null}
+        <meta name='mobile-web-app-capable' content='yes' />
     </Head>
 
     )

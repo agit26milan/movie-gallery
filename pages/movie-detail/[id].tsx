@@ -18,7 +18,7 @@ margin: auto
 
     return (
       <React.Fragment>
-        <SEO title={movieDetail.title} description={movieDetail.overview} />
+        <SEO image={movieDetail.poster_path ? `https://image.tmdb.org/t/p/w500${movieDetail.poster_path}` : '/assets/images/noimage.jpg' } title={movieDetail.title} description={movieDetail.overview} />
         <Container>
             <Row>
                 <Col>
